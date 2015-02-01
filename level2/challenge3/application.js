@@ -1,4 +1,5 @@
 $(function() {
+    var domainURL = "http://localhost:3005"
     // challenge 1 - root URL model
     var Appointment;
     /*
@@ -9,8 +10,8 @@ $(function() {
         }
     });
     */
-    Appointment = Backbone.Model.ext2end({
-        urlRoot:"/appointments",
+    Appointment = Backbone.Model.extend({
+        urlRoot: domainURL + "/appointments",
         defaults:function( ){
             return {
               title: 'Checkup',
@@ -27,8 +28,15 @@ $(function() {
     });
 
     var appointment;
-    appointment = new Appointment({id:1});
-    appointment.fetch( );
+    appointment = new Appointment({
+        id:1
+    });
+    appointment.fetch({
+        success:function(response){
+            console.log(response);
+        }
+    });
+    
     var appointmentView = new AppointmentView({model:appointment});
 
     appointmentView.render( );
