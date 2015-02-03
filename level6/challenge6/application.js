@@ -1,8 +1,13 @@
 $(function() {
     // challenge 1 - model default attribute
-    AppointmentList = Backbone.Collection.extend({
-        url:domainURL+'/appointments',
-        model: Appointment
+    var AppointmentList = Backbone.Collection.extend({
+          model: Appointment,
+          initialize: function(){
+            this.on('remove',this.hide);
+        },
+        hide:function(model){
+            model.trigger('hide');
+        }
     });
 
     var appointment;
@@ -20,11 +25,17 @@ $(function() {
 
     var AppointmentView;
     AppointmentView = Backbone.View.extend({
-      template :_.template("<span><%= title %></span> <a id='CancelBtn' href='#'>Cancel</a>"),
-      events:{
+          template :_.template("<span><%= title %></span> <a id='CancelBtn' href='#'>Cancel</a>"),
+          events:{
             "dblclick span":"notify",
             "click #CancelBtn":"cancelApp"
         },
+        initialize: function(){
+            this.model.on('hide',this.remove,this);
+        },
+        remove: function(){
+            this.$el.remove();
+        }
         cancelApp:function( ){
             this.model.cancel( );
         },
